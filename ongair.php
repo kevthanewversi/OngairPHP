@@ -1,0 +1,98 @@
+<?php
+class OngairAPI {
+	var $token;
+	// public $env = getenv('SUBDOMAIN');
+  public $url1 ='http://beta.ongair.im/api/v1/base';
+	public function __construct($token){
+	$this->token = $token; // the
+	
+	} 
+	
+
+ function status(){
+	$url = $this->url1.'/status?token='.$this->token;
+	$ch = curl_init(); //initialize connection
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_URL,$url);
+  $result = curl_exec($ch);//go to url
+	echo $result;
+	print_r(curl_getinfo($ch)); //request info
+  curl_close($ch);
+	}
+
+
+	
+
+function sendMessage($phone_number,$message){  
+	$url = $this->url1.'/send';
+	$post_data['token'] = $this->token;
+  $post_data['phone_number'] = $phone_number;
+  $post_data['text'] = $message;
+  $this->implodeandPost($post_data,$url);
+
+}
+
+function createContact($phone_number, $name)
+{   $post_data['token'] = $this->token; 
+		$post_data['phone_number'] = $phone_number;
+		$post_data['$name'] = $name;
+    $url = $this->$url1.'/create_contact';
+	  $this->implodeandPost($post_data,$url);
+}
+
+	 function createGroup($name) {   
+	 	$post_data['token'] = $this->token; 
+		$post_data['$name'] = '$name';
+		$url = $this->$url1.'/create_group';	
+		$this->implodeandPost($post_data,$url);
+	 }
+
+
+	function addParticipant($id, $phone_number) { 
+		$post_data['token'] = $this->token;   
+		$post_data['$phone_number'] = $phone_number;
+		$url = $this->$url1.'/groups/$id/add_participant';
+		$this->implodeandPost($post_data,$url);	
+	}
+
+	function removeFromGroup($id, $phone_number){
+		$post_data['token'] = $this->token;  
+		$post_data['$phone_number'] = $phone_number;
+
+		$url = $this->$url1.'/groups/$id/remove_participant';
+		$this->implodeandPost($post_data,$url);
+	}
+
+	function sendGroupMessage($phone_number, $message, $id){
+	  $post_data['token'] = $this->token; 
+		$post_data['phone_number'] = $phone_number;
+		$post_data['text'] = $message;
+		$url = $this->$url1.'/groups/$id/send_message'; //where does the $id come from
+
+		$this->implodeandPost($post_data,$url);
+	}
+
+	function implodeandPost($post_data, $url){
+		foreach ( $post_data as $key => $value)  //implode url post parametres so they can be appended to the url
+		 {
+			$post_items[] = $key . '=' . $value;
+		 }
+		$post_string = implode ('&', $post_items);
+		 // $token = "";
+		$ch = curl_init(); //initialize connection
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+		curl_setopt($ch, CURLOPT_URL,$url);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS,$post_string); //set post parametres
+    $result = curl_exec($ch);//go to url
+		echo $result;
+		print_r(curl_getinfo($ch)); //request info
+    curl_close($ch); //close connection
+	}
+
+	 
+
+			}
+  
+?>
+
