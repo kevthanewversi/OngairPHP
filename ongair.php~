@@ -10,28 +10,28 @@ class OngairAPI {
 	
 
  function status(){
-	     $url = $this->url1.'/status?token='.$this->token;
-	     $this->getUrl($url);
+	$url = $this->url1.'/status?token='.$this->token;
+
 	}
 
 
 	
 
 function sendMessage($phone_number,$message){  
-	     $url = $this->url1.'/send';
-	     $post_data['token'] = $this->token;
-	     $post_data['phone_number'] = $phone_number;
-	     $post_data['text'] = $message;
-	     $this->implodeandPost($post_data,$url);
+	$url = $this->url1.'/send';
+	$post_data['token'] = $this->token;
+  $post_data['phone_number'] = $phone_number;
+  $post_data['text'] = $message;
+  $this->implodeandPost($post_data,$url);
 
 }
 
 function createContact($phone_number, $name)
-{       $post_data['token'] = $this->token; 
+{   $post_data['token'] = $this->token; 
 		$post_data['phone_number'] = $phone_number;
 		$post_data['$name'] = $name;
-        $url = $this->$url1.'/create_contact';
-	    $this->implodeandPost($post_data,$url);
+    $url = $this->$url1.'/create_contact';
+	  $this->implodeandPost($post_data,$url);
 }
 
 	 function createGroup($name) {   
@@ -58,7 +58,7 @@ function createContact($phone_number, $name)
 	}
 
 	function sendGroupMessage($phone_number, $message, $id){
-	    $post_data['token'] = $this->token; 
+	  $post_data['token'] = $this->token; 
 		$post_data['phone_number'] = $phone_number;
 		$post_data['text'] = $message;
 		$url = $this->$url1.'/groups/$id/send_message'; //where does the $id come from
@@ -66,7 +66,7 @@ function createContact($phone_number, $name)
 		$this->implodeandPost($post_data,$url);
 	}
 
-	function implodeandPost($post_data, $url){ //for POST requests
+	function implodeandPost($post_data, $url){
 		foreach ( $post_data as $key => $value)  //implode url post parametres so they can be appended to the url
 		 {
 			$post_items[] = $key . '=' . $value;
@@ -78,22 +78,19 @@ function createContact($phone_number, $name)
 		curl_setopt($ch, CURLOPT_URL,$url);
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS,$post_string); //set post parametres
+    $result = curl_exec($ch);//go to url
+		echo $result;
+		print_r(curl_getinfo($ch)); //request info
+    curl_close($ch); //close connection
+	}
+        function urlGet($url){
+        $ch = curl_init(); //initialize connection
+	curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+	curl_setopt($ch, CURLOPT_URL,$url);
         $result = curl_exec($ch);//go to url
-		echo $result;
-		print_r(curl_getinfo($ch)); //request info
-        curl_close($ch); //close connection
-	}
-
-    function getUrl($url){ //for GET requests
-		$ch = curl_init(); //initialize connection
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_URL,$url);
-	    $result = curl_exec($ch);//go to url
-		echo $result;
-		print_r(curl_getinfo($ch)); //request info
-	    curl_close($ch);
-	}
-
+	echo $result;
+	print_r(curl_getinfo($ch)); //request info
+        curl_close($ch);}
 	 
 
 			}
